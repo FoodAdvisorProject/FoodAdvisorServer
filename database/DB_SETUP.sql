@@ -11,10 +11,11 @@ CREATE TABLE UTENTE (
 
 CREATE TABLE ARTICOLO (
 	id          bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT ,
-	nome        varchar(255) NOT NULL UNIQUE,
+	nome        varchar(255) NOT NULL ,
 	id_creatore bigint       NOT NULL REFERENCES UTENTE(id),
 	descrizione varchar(255) NOT NULL,
-	foto        blob         #allows null for debugging purpose 
+	foto        blob,         
+	UNIQUE(nome,id_creatore)
 	
 );
 
