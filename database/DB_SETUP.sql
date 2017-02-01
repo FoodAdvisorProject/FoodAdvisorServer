@@ -2,7 +2,7 @@ CREATE TABLE UTENTE (
 	id                  bigint NOT NULL PRIMARY KEY AUTO_INCREMENT, 
 	login               varchar(25) NOT NULL UNIQUE,
 	passw               varchar(255) not null,
-	email               varchar(255) not null unique,
+	email               varchar(255) not null UNIQUE,
 	nome                char(25) not null, cognome char(25) not null,
 	is_azienda          bool not null,
 	descrizione_azienda varchar(255), # a check that forces not null if is_azienda is missing
