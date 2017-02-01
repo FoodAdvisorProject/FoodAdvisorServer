@@ -3,7 +3,8 @@ CREATE TABLE UTENTE (
 	login               varchar(25) NOT NULL UNIQUE,
 	passw               varchar(255) not null,
 	email               varchar(255) not null UNIQUE,
-	nome                char(25) not null, cognome char(25) not null,
+	nome                char(25) not null, 
+	cognome             char(25) not null,
 	is_azienda          bool not null,
 	descrizione_azienda varchar(255), # a check that forces not null if is_azienda is missing
 	foto                blob          # allows null for debugging purpose
