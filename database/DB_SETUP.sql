@@ -24,7 +24,7 @@ CREATE TABLE TRANSAZIONE (
 	id            bigint NOT NULL PRIMARY KEY AUTO_INCREMENT ,
 	id_articolo   bigint NOT NULL REFERENCES ARTICOLO(id),
 	id_compratore bigint NOT NULL REFERENCES UTENTE(id),
-	id_venditore  bigint ,     #NULL value identifies that id_compratore == id_creatore
+	id_venditore  bigint          REFERENCES UTENTE(id),#NULL value identifies that id_compratore == id_creatore
 	coordinate    float(10,6), #allows null for debugging purpose
 	UNIQUE(id_articolo,id_compratore,id_venditore)
 );
