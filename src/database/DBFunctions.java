@@ -5,6 +5,10 @@
  */
 package database;
 
+import classes.Article;
+import classes.Photo;
+import classes.Travel;
+import classes.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,21 +35,21 @@ public class DBFunctions {
     public void addUser(String login_name,
                         String login_passw,
                         String email,
-                        String nome,
-                        String cognome,
-                        Integer is_azienda,
-                        String descrizione_azienda,
-                        String photo) throws SQLException{
+                        String name,
+                        String second_name,
+                        Integer is_enterprise,
+                        String enterprise_description,
+                        Photo photo) throws SQLException{
         
         String query1 = "INSERT INTO "+user_table+
-                " (login,passw,email,nome,cognome,is_azienda,descrizione_azienda) values (?,?,?,?,?,?,?);";
+                " (login,passw,email,name,second_name,is_enterprise,enterprise_description) values (?,?,?,?,?,?,?);";
         String query2 = "INSERT INTO "+user_table+
-                " (login,passw,email,nome,cognome,is_azienda) values (?,?,?,?,?,?);";
+                " (login,passw,email,name,second_name,is_enterprise) values (?,?,?,?,?,?);";
         
         Connection conn = driver.getConnection();
         
         PreparedStatement pstmt;
-        if(is_azienda>0)
+        if(is_enterprise>0)
             pstmt= conn.prepareStatement(query1);
         else 
             pstmt= conn.prepareStatement(query2);
@@ -53,10 +57,10 @@ public class DBFunctions {
         pstmt.setString (1, login_name);
         pstmt.setString (2, login_passw);
         pstmt.setString (3, email);
-        pstmt.setString (4, nome);
-        pstmt.setString (5, cognome);
-        pstmt.setInt    (6, is_azienda);
-        if (is_azienda>0) pstmt.setString (7, descrizione_azienda);
+        pstmt.setString (4, name);
+        pstmt.setString (5, second_name);
+        pstmt.setInt    (6, is_enterprise);
+        if (is_enterprise>0) pstmt.setString (7, enterprise_description);
         
         pstmt.executeUpdate();
         
@@ -68,9 +72,9 @@ public class DBFunctions {
     public void addArticle(String name,
                            long creator_id,
                            String description,
-                           String photo) throws SQLException{
+                           Photo photo) throws SQLException{
         String query ="INSERT INTO "+article_table+
-                "( nome,id_creatore,descrizione) values (?,?,?)";
+                "( name,id_creator,description) values (?,?,?)";
         
         Connection conn = driver.getConnection();
         
@@ -91,28 +95,42 @@ public class DBFunctions {
     public void addTransaction(long id_article,
                                long id_buyer,
                                long id_seller,
-                               float coord ) throws SQLException{
+                               float longitude,
+                               float latitude  ) throws SQLException{
         String query;
         if(id_seller>0){
          query="INSERT INTO "+transaction_table+
-                "( id_articolo,id_compratore,coordinate,id_venditore) values (?,?,?,?)";
+                "( id_article,id_buyer,longitude,latitude,id_seller) values (?,?,?,?,?)";
         }
         else query = "INSERT INTO "+transaction_table+
-                "( id_articolo,id_compratore,coordinate) values (?,?,?)";
+                "( id_article,id_buyer,longitude,latitude) values (?,?,?,?)";
         Connection conn = driver.getConnection();
         
         PreparedStatement pstmt = conn.prepareStatement(query);
         
         pstmt.setLong  (1, id_article);
         pstmt.setLong  (2, id_buyer);
-        pstmt.setFloat (3, coord);
-        
-        if (id_seller>0) pstmt.setLong  (4, id_seller);
+        pstmt.setFloat (3, longitude);
+        pstmt.setFloat (4, latitude );
+        if (id_seller>0) pstmt.setLong  (5, id_seller);
         
         
         pstmt.executeUpdate();
         
         //conn.commit();
         //conn.close();
+    }
+    
+    //@IMPL
+    public Article getArticle(long id_article){
+        return null;
+    }
+    //@IMPL
+    public User    getUser(long id_user){
+        return null;
+    }
+    //@IMPL
+    public Travel  getArticleTravel(Article art){
+        return null;
     }
 }

@@ -29,6 +29,7 @@ public class FoodAdvisor {
         DBDriver d=null;
         String utente="UTENTE",articolo="ARTICOLO",transazione="TRANSAZIONE";
         try {
+            // @FIX add a dummy user
             d = new DBDriver("test_db","root","root");
         } catch (Exception ex) {
             Logger.getLogger(FoodAdvisor.class.getName()).log(Level.SEVERE, null, ex);
@@ -43,25 +44,27 @@ public class FoodAdvisor {
         DBFunctions dbf = new DBFunctions(d,utente,articolo,transazione);
         
         try {
-            /*dbf.addUser("utente2", 
+            /*
+            dbf.addUser("utente2", 
                     "lamiapass", 
                     "lamia@email.com", 
                     "maria", 
                     "defilippi",
                     1, 
                     "Qua vendo carciofi e cipolle",
-                   "");
+                   null);
             
             System.out.println("added user");
             
-            dbf.addArticle("Carciof", 1, "i miei son meglio", "");
-            */
-            System.out.println("Added article");
+            dbf.addArticle("Carciof", 1, "i miei son meglio", null);
             
+            System.out.println("Added article");
+            */
             dbf.addTransaction(new Long(1), 
                     1, 
-                    3, 
-                    0);
+                    0, 
+                    0,
+                    1);
             System.out.println("Added transaction.");
         } catch (SQLException ex) {
             printSQLException(ex);
