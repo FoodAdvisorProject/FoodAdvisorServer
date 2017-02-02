@@ -5,16 +5,6 @@
  */
 package foodadvisor;
 
-import static database.DBUtils.printSQLException;
-import database.DBDriver;
-import database.DBFunctions;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author bp
@@ -26,50 +16,8 @@ public class FoodAdvisor {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        DBDriver d=null;
-        String utente="UTENTE",articolo="ARTICOLO",transazione="TRANSAZIONE";
-        try {
-            // @FIX add a dummy user
-            d = new DBDriver("test_db","root","root");
-        } catch (Exception ex) {
-            Logger.getLogger(FoodAdvisor.class.getName()).log(Level.SEVERE, null, ex);
-            System.exit(1);
-        }
-        
-        if(d==null){
-            System.out.println("Failed to initialize DBDriver. ");
-            return ;
-        }
-        
-        DBFunctions dbf = new DBFunctions(d,utente,articolo,transazione);
-        
-        try {
-            /*
-            dbf.addUser("utente2", 
-                    "lamiapass", 
-                    "lamia@email.com", 
-                    "maria", 
-                    "defilippi",
-                    1, 
-                    "Qua vendo carciofi e cipolle",
-                   null);
-            
-            System.out.println("added user");
-            
-            dbf.addArticle("Carciof", 1, "i miei son meglio", null);
-            
-            System.out.println("Added article");
-            */
-            dbf.addTransaction(new Long(1), 
-                    1, 
-                    0, 
-                    0,
-                    1);
-            System.out.println("Added transaction.");
-        } catch (SQLException ex) {
-            printSQLException(ex);
-            System.out.println("Failed SOMETHING.");
-        }
+        System.out.println("Hello, this is FoodAdvisor.");
+        System.out.println("Work in progress.");
     }
     
 }

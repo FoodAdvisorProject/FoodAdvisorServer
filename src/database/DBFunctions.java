@@ -187,8 +187,8 @@ public class DBFunctions {
     
     }
     
-    public Transaction getTransaction(long article_id,long user_id) throws SQLException{
-        String query ="SELECT * FROM "+transaction_table+" WHERE id_article = "+article_id +" AND id_buyer = "+user_id;
+    public Transaction getTransaction(long article_id,long buyer_id) throws SQLException{
+        String query ="SELECT * FROM "+transaction_table+" WHERE id_article = "+article_id +" AND id_buyer = "+buyer_id;
         Connection conn = driver.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery(query);
