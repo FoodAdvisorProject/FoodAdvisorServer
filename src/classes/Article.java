@@ -11,17 +11,25 @@ package classes;
  */
 public class Article {
     public final long article_id;
-    public final String nome;
+    public final String name;
     public final Photo photo;
-    public final String descrizione;
+    public final String description;
     public final long creator_id;
 
-    public Article(long article_id, String nome, Photo photo, String descrizione, long creator_id) {
+    public Article(long article_id, String name, long creator_id,String description,Photo photo) {
         this.article_id = article_id;
-        this.nome = nome;
-        this.photo = photo;
-        this.descrizione = descrizione;
+        this.name = name;
         this.creator_id = creator_id;
+        this.description = description;
+        this.photo = photo;
+        
     }
+
+    @Override
+    public String toString() {
+        return "Article{" + "article_id=" + article_id + ", name=" + name + ", photo=" + photo + ", description=" + description + ", creator_id=" + creator_id + '}';
+    }
+    
+    
     
 }

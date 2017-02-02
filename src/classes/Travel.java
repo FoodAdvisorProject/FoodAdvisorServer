@@ -5,10 +5,28 @@
  */
 package classes;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author bp
  */
 public class Travel {
+    
+    private final LinkedList<Transaction> list;
+    public Travel(LinkedList<Transaction> l) {
+        list = l;
+    }
+    
+    public LinkedList<Transaction> getTransactionList(){
+        return list;
+    }
+
+    @Override
+    public String toString() {
+        return "Travel{" + "list=" + list +  '}';
+    }
+    
     
 }

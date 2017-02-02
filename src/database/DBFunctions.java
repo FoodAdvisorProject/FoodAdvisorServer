@@ -7,11 +7,15 @@ package database;
 
 import classes.Article;
 import classes.Photo;
+import classes.Transaction;
 import classes.Travel;
 import classes.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
 
 /**
  *
@@ -31,7 +35,28 @@ public class DBFunctions {
     }
 
     
-    //@FIX photo need to be added
+    public void addArticle(String name,
+                           long creator_id,
+                           String description,
+                           Photo photo) throws SQLException{
+        String query ="INSERT INTO "+article_table+
+                "( name,id_creator,description) values (?,?,?)";
+        
+        Connection conn = driver.getConnection();
+        
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        
+        pstmt.setString (1, name);
+        pstmt.setLong   (2, creator_id);
+        pstmt.setString (3, description);
+        
+        pstmt.executeUpdate();
+        
+        //conn.commit();
+        conn.close();
+    }
+    
+    
     public void addUser(String login_name,
                         String login_passw,
                         String email,
@@ -68,29 +93,8 @@ public class DBFunctions {
         conn.close();
     }
     
-    //@FIX photo need to be added
-    public void addArticle(String name,
-                           long creator_id,
-                           String description,
-                           Photo photo) throws SQLException{
-        String query ="INSERT INTO "+article_table+
-                "( name,id_creator,description) values (?,?,?)";
-        
-        Connection conn = driver.getConnection();
-        
-        PreparedStatement pstmt = conn.prepareStatement(query);
-        
-        pstmt.setString (1, name);
-        pstmt.setLong   (2, creator_id);
-        pstmt.setString (3, description);
-        
-        pstmt.executeUpdate();
-        
-        //conn.commit();
-        conn.close();
-    }
-    
-    //@FIX coord need to be added
+
+    //@FIX check that transaction doesn't exist yet
     //id_seller == 0 means that buyer is the creator of the article
     public void addTransaction(long id_article,
                                long id_buyer,
@@ -118,19 +122,105 @@ public class DBFunctions {
         pstmt.executeUpdate();
         
         //conn.commit();
-        //conn.close();
+        conn.close();
+    }
+    
+    public Article getArticle(long id_article) throws SQLException{
+        String query ="SELECT * FROM "+article_table+" WHERE id="+id_article;
+        
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return null;
+        
+        Article ret = new Article(rset.getLong(1),
+                            rset.getString(2),
+                            rset.getLong(3),
+                            rset.getString(4),
+                            new Photo(rset.getBlob(5)));
+        
+        conn.close();
+        return ret;
+        
+    }
+    
+    public User getUser(long id_user) throws SQLException{
+        String query ="SELECT * FROM "+user_table+" WHERE id="+id_user;
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return null;
+        
+        User ret = new User(rset.getLong(1),
+                rset.getString(2),
+                rset.getString(3),
+                rset.getString(4),
+                rset.getString(5),
+                rset.getString(6),
+                rset.getBoolean(7),
+                rset.getString(8),
+                new Photo(rset.getBlob(9)));
+        
+        conn.close();
+        return ret;
+    }
+    
+    public Transaction getTransaction(long id_transaction) throws SQLException{
+        String query ="SELECT * FROM "+transaction_table+" WHERE id="+id_transaction;
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return null;
+        
+        Transaction ret= new Transaction(rset.getLong(1),
+                rset.getLong(2),
+                rset.getLong(3),
+                rset.getLong(4),
+                rset.getFloat(5),
+                rset.getFloat(6));
+        
+        conn.close();
+        return ret;
+    
+    }
+    
+    public Transaction getTransaction(long article_id,long user_id) throws SQLException{
+        String query ="SELECT * FROM "+transaction_table+" WHERE id_article = "+article_id +" AND id_buyer = "+user_id;
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return null;
+        
+        Transaction ret= new Transaction(rset.getLong(1),
+                rset.getLong(2),
+                rset.getLong(3),
+                rset.getLong(4),
+                rset.getFloat(5),
+                rset.getFloat(6));
+        
+        conn.close();
+        return ret;
+    }
+    
+    public Transaction getTransaction(Article art,User user) throws SQLException{
+        return getTransaction(art.article_id, user.user_id);
     }
     
     //@IMPL
-    public Article getArticle(long id_article){
-        return null;
-    }
-    //@IMPL
-    public User    getUser(long id_user){
-        return null;
-    }
-    //@IMPL
-    public Travel  getArticleTravel(Article art){
-        return null;
+    public Travel  getArticleTravel(Article art,User user) throws SQLException{
+        
+        LinkedList<Transaction> ret = new LinkedList();
+        
+        Transaction t = getTransaction(art.article_id,user.user_id);
+        while(t.seller_id != 0) {
+            ret.add(t);
+            t=getTransaction(art.article_id,t.seller_id);
+            
+        }
+        return new Travel(ret);
     }
 }
