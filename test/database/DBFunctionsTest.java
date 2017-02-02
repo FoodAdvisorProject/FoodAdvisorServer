@@ -72,7 +72,7 @@ public class DBFunctionsTest {
         String description = "This is a test Article.";
         Photo photo = null;
         
-        dbf.addArticle(name, creator_id, description, photo);
+        dbf.addArticle(name, creator_id, description,1,2, photo);
         
     }
 
@@ -183,13 +183,9 @@ public class DBFunctionsTest {
     @Test
     public void testGetTransaction_Article_User() throws Exception {
         System.out.println("getTransaction2");
-        Long id1=1L,id2=1L;
-        System.out.println("id12"+id1+" "+id2);
-        Article art = dbf.getArticle(id1);
-        User user = dbf.getUser(id2);
         
-        System.out.println("user "+user);
-        System.out.println("article "+art);
+        Article art = dbf.getArticle(1);
+        User user = dbf.getUser(1);
         
         Transaction result = dbf.getTransaction(art, user);
         

@@ -34,25 +34,50 @@ public class DBFunctions {
         this.transaction_table = transaction_table;
     }
 
-    
+    //@FIX transaction entry has to be added with the new article.
+    // look at transactions.
     public void addArticle(String name,
                            long creator_id,
                            String description,
+                           float longitude,
+                           float latitude,
                            Photo photo) throws SQLException{
         String query ="INSERT INTO "+article_table+
                 "( name,id_creator,description) values (?,?,?)";
         
+        String query1 ="INSERT INTO "+transaction_table+
+                "( id_article,id_buyer,longitude,latitude,id_seller) values (?,?,?,?,NULL)";
         Connection conn = driver.getConnection();
+        conn.setAutoCommit(false);
         
-        PreparedStatement pstmt = conn.prepareStatement(query);
+        
+        PreparedStatement pstmt = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         
         pstmt.setString (1, name);
         pstmt.setLong   (2, creator_id);
         pstmt.setString (3, description);
         
+        
         pstmt.executeUpdate();
         
-        //conn.commit();
+        ResultSet rs = pstmt.getGeneratedKeys();
+        
+        long article_id=-1;
+        if(rs.next()) article_id=rs.getLong(1);
+        else throw new SQLException("Cannot retrieve the generated key");
+        
+        System.out.println("GENERATED KEY : "+article_id);
+        
+        pstmt=conn.prepareStatement(query1);
+        
+        pstmt.setLong  (1, article_id);
+        pstmt.setLong  (2, creator_id);
+        pstmt.setFloat (3, longitude);
+        pstmt.setFloat (4, latitude );
+        
+        pstmt.executeUpdate();
+        
+        conn.commit();
         conn.close();
     }
     
@@ -95,19 +120,17 @@ public class DBFunctions {
     
 
     //@FIX check that transaction doesn't exist yet
-    //id_seller == 0 means that buyer is the creator of the article
+    //id_seller == NULL means that buyer is the creator of the article
     public void addTransaction(long id_article,
                                long id_buyer,
                                long id_seller,
                                float longitude,
                                float latitude  ) throws SQLException{
         String query;
-        if(id_seller>0){
-         query="INSERT INTO "+transaction_table+
+        
+        query="INSERT INTO "+transaction_table+
                 "( id_article,id_buyer,longitude,latitude,id_seller) values (?,?,?,?,?)";
-        }
-        else query = "INSERT INTO "+transaction_table+
-                "( id_article,id_buyer,longitude,latitude) values (?,?,?,?)";
+        
         Connection conn = driver.getConnection();
         
         PreparedStatement pstmt = conn.prepareStatement(query);
@@ -116,7 +139,7 @@ public class DBFunctions {
         pstmt.setLong  (2, id_buyer);
         pstmt.setFloat (3, longitude);
         pstmt.setFloat (4, latitude );
-        if (id_seller>0) pstmt.setLong  (5, id_seller);
+        pstmt.setLong  (5, id_seller);
         
         
         pstmt.executeUpdate();
@@ -188,7 +211,10 @@ public class DBFunctions {
     }
     
     public Transaction getTransaction(long article_id,long buyer_id) throws SQLException{
-        String query ="SELECT * FROM "+transaction_table+" WHERE id_article = "+article_id +" AND id_buyer = "+buyer_id;
+        String query ="SELECT * FROM "+transaction_table+
+                " WHERE id_article = "+article_id +
+                " AND   id_buyer = "+buyer_id;
+        
         Connection conn = driver.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery(query);
