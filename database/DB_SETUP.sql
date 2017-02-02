@@ -26,7 +26,8 @@ CREATE TABLE TRANSAZIONE (
 	id_articolo   bigint NOT NULL ,
 	id_compratore bigint NOT NULL ,
 	id_venditore  bigint          ,#NULL value identifies that id_compratore == id_creatore
-	coordinate    float(10,6)     ,#allows null for debugging purpose
+	longitudine   float(10,6)     ,#allows null for debugging purpose
+	latitudine    float(10,6)     ,
 	FOREIGN KEY (id_articolo)   REFERENCES ARTICOLO(id),
 	FOREIGN KEY (id_compratore) REFERENCES UTENTE(id),
 	FOREIGN KEY (id_venditore ) REFERENCES UTENTE(id),
