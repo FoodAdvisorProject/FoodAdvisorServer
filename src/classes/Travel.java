@@ -15,6 +15,7 @@ import java.util.List;
 public class Travel {
     
     private final LinkedList<Transaction> list;
+    
     public Travel(LinkedList<Transaction> l) {
         list = l;
     }
@@ -25,7 +26,9 @@ public class Travel {
 
     @Override
     public String toString() {
-        return "Travel{" + "list=" + list +  '}';
+        String ret= "Travel{ ";
+        for (Transaction t : list) ret+=t.toString()+" ";
+        return ret +  '}';
     }
     
     

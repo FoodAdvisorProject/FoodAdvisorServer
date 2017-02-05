@@ -10,6 +10,7 @@ import classes.Photo;
 import classes.Transaction;
 import classes.Travel;
 import classes.User;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +22,8 @@ import static org.junit.Assert.*;
  *
  * @author bp
  */
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// this signature force JUnit to run method based on name order
 public class DBFunctionsTest {
     private static DBDriver d;
     private static DBFunctions dbf;
@@ -63,11 +66,12 @@ public class DBFunctionsTest {
     /**
      * Test of addArticle method, of class DBFunctions.
      */
+    // Note that the tuple (name,creator_id) has to be unique.
     @Test
     public void testAddArticle() throws Exception {
         System.out.println("AddArticle");
         
-        String name = "Test1";
+        String name = "Test12";
         long creator_id = 1;
         String description = "This is a test Article.";
         Photo photo = null;
@@ -79,13 +83,14 @@ public class DBFunctionsTest {
     /**
      * Test of addUser method, of class DBFunctions.
      */
+    // Note that login_name and email email has to be unique.
     @Test
     public void testAddUser() throws Exception {
         System.out.println("addUser");
         
-        String login_name = "Test1";
+        String login_name = "Test12";
         String login_passw = "Test1";
-        String email = "Test1";
+        String email = "Test12";
         String name = "test";
         String second_name = "test";
         Integer is_enterprise = 1;
@@ -95,7 +100,8 @@ public class DBFunctionsTest {
         dbf.addUser(login_name, login_passw, email, name, second_name, is_enterprise, enterprise_description, photo);
     
     }
-    @Test
+    
+    //@Test
     public void testAddUser1() throws Exception {
         System.out.println("addUser1");
         
@@ -115,13 +121,14 @@ public class DBFunctionsTest {
     /**
      * Test of addTransaction method, of class DBFunctions.
      */
+    // Note that the tuple (article,seller,buyer) has to be unique.
     @Test
     public void testAddTransaction() throws Exception {
         System.out.println("addTransaction");
         
         long id_article = 1;
-        long id_buyer = 2;
-        long id_seller = 1;
+        long id_buyer = 11;
+        long id_seller = 2;
         float longitude = 13.3F;
         float latitude = 0.0F;
         
@@ -151,7 +158,7 @@ public class DBFunctionsTest {
         long id_user = 1;
         
         User result = dbf.getUser(id_user);
-        System.out.println(dbf);
+        System.out.println(result);
     }
 
     /**
@@ -183,7 +190,7 @@ public class DBFunctionsTest {
     @Test
     public void testGetTransaction_Article_User() throws Exception {
         System.out.println("getTransaction2");
-        
+        System.out.println("This fails due to the parallel execution of tests.");
         Article art = dbf.getArticle(1);
         User user = dbf.getUser(1);
         
@@ -197,8 +204,20 @@ public class DBFunctionsTest {
      */
     @Test
     public void testGetArticleTravel() throws Exception {
-        System.out.println("getArticleTravel");
-        fail("not yet implemented");
+        System.out.println("getArticleTravel ");
+        
+        Travel t = dbf.getArticleTravel(1,2);
+        System.out.println("Travel result: "+t);
     }
     
+    @Test
+    public void testGetUserArticles() throws Exception {
+        System.out.println("getUserArticles ");
+        
+        String res = "";
+        List<Article> l = dbf.getUserArticles(1);
+        for(Article a: l) res+=a+" ";
+        System.out.println("Result "+res );
+        
+    }
 }
