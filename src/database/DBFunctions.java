@@ -10,6 +10,7 @@ import classes.Photo;
 import classes.Transaction;
 import classes.Travel;
 import classes.User;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -135,6 +136,18 @@ public class DBFunctions {
         conn.close();
     }
     
+    public void addUser(String login_name,
+                        String login_passw,
+                        String email,
+                        String name,
+                        String second_name,
+                        Integer is_enterprise,
+                        String enterprise_description,
+                        String photo) throws SQLException{
+        addUser(login_name,login_passw,email,name,second_name,is_enterprise,enterprise_description,new Photo(photo));
+        
+    }
+    
 
     // This function adds a Transaction to the DB with proper data
     // Note that the tuple (id_article,id_buyer,id_seller) has to be unique
@@ -175,12 +188,12 @@ public class DBFunctions {
         ResultSet rset = stmt.executeQuery(query);
         
         if(!rset.next()) return null;
-        
+        Blob b = rset.getBlob(5);
         Article ret = new Article(rset.getLong(1),
                             rset.getString(2),
                             rset.getLong(3),
                             rset.getString(4),
-                            new Photo(rset.getBlob(5)));
+                            new Photo(b.getBytes(1, (int) b.length())));
         
         conn.close();
         return ret;
@@ -195,7 +208,7 @@ public class DBFunctions {
         ResultSet rset = stmt.executeQuery(query);
         
         if(!rset.next()) return null;
-        
+        Blob b = rset.getBlob(9);
         User ret = new User(rset.getLong(1),
                 rset.getString(2),
                 rset.getString(3),
@@ -204,7 +217,7 @@ public class DBFunctions {
                 rset.getString(6),
                 rset.getBoolean(7),
                 rset.getString(8),
-                new Photo(rset.getBlob(9)));
+                new Photo(b.getBytes(1, (int) b.length())));
         
         conn.close();
         return ret;
@@ -264,22 +277,18 @@ public class DBFunctions {
     // to the one in which the article has been created
     public Travel  getArticleTravel(long article_id,long user_buyer_id) throws SQLException{
         
-        System.out.println("Debugging get Travel.");
-        
         LinkedList<Transaction> ret = new LinkedList();
         
         Transaction t = getTransaction(article_id,user_buyer_id);
-        System.out.println("first trans: "+t);
         
         while(t.seller_id !=0) {
             ret.add(t);
             t=getTransaction(article_id,t.seller_id);
-            System.out.println(" Loop trans: "+t);
         }
         ret.add(t);
-        //System.out.println("last trans: "+getTransaction(article_id,0));
         
         return new Travel(ret);
+        
     }
     // Overload of the previous one
     public Travel getArticleTravel(Article art,User user_buyer) throws SQLException{
@@ -300,12 +309,12 @@ public class DBFunctions {
         
         
         while(rset.next()){
-            
+            Blob b = rset.getBlob(5);
             l.add(new Article(rset.getLong(1),
                     rset.getString(2),
                     rset.getLong(3),
                     rset.getString(4),
-                    new Photo(rset.getBlob(5))));
+                    new Photo(b.getBytes(1, (int) b.length()))));
         
         }
         

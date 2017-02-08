@@ -10,7 +10,7 @@ package classes;
  * @author bp
  */
 public class Coordinates {
-    private final float longitude,latitude;
+    public final float longitude,latitude;
 
     public Coordinates(float longitude, float latitude) {
         this.longitude = longitude;

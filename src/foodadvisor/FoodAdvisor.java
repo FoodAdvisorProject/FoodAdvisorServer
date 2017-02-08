@@ -18,6 +18,7 @@ public class FoodAdvisor {
         // TODO code application logic here
         System.out.println("Hello, this is FoodAdvisor.");
         System.out.println("Work in progress.");
+        
     }
     
 }
