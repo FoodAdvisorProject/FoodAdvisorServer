@@ -1,2 +1,2 @@
 # FoodAdvisorServer
-FoodAdvisor's main server
+FoodAdvisor's main server DB managment
