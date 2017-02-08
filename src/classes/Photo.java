@@ -13,14 +13,6 @@ import java.util.Base64;
  * @author bp
  */
 public class Photo {
-    //public final Blob img;
-    /*
-    			pre = con
-					.prepareStatement("insert into blobtest (pic_name,pic_file) values (?,?)");
-			pre.setString(1, picfile.getName());
-			pre.setBinaryStream(2, fis, (int) picfile.length());
-                        int count = pre.executeUpdate();
-    */
     public final String img;
     public final byte[] data;
     public Photo(String img) {
