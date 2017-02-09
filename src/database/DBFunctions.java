@@ -290,6 +290,10 @@ public class DBFunctions {
         return new Travel(ret);
         
     }
+    public Travel getArticleTravel(long tran_id) throws SQLException{
+        Transaction t = getTransaction(tran_id);
+        return getArticleTravel(t.article_id,t.buyer_id);
+    }
     // Overload of the previous one
     public Travel getArticleTravel(Article art,User user_buyer) throws SQLException{
         return getArticleTravel(art.article_id, user_buyer.user_id);
