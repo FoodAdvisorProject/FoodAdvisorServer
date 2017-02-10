@@ -189,11 +189,14 @@ public class DBFunctions {
         
         if(!rset.next()) return null;
         Blob b = rset.getBlob(5);
+        Photo p;
+        if(b!= null) p=new Photo(b.getBytes(1,(int)b.length())); else p = new Photo("");
+        
         Article ret = new Article(rset.getLong(1),
                             rset.getString(2),
                             rset.getLong(3),
                             rset.getString(4),
-                            new Photo(b.getBytes(1, (int) b.length())));
+                            p);
         
         conn.close();
         return ret;
@@ -209,6 +212,8 @@ public class DBFunctions {
         
         if(!rset.next()) return null;
         Blob b = rset.getBlob(9);
+        Photo p;
+        if(b!= null) p=new Photo(b.getBytes(1,(int)b.length())); else p = new Photo("");
         User ret = new User(rset.getLong(1),
                 rset.getString(2),
                 rset.getString(3),
@@ -217,7 +222,7 @@ public class DBFunctions {
                 rset.getString(6),
                 rset.getBoolean(7),
                 rset.getString(8),
-                new Photo(b.getBytes(1, (int) b.length())));
+                p);
         
         conn.close();
         return ret;
