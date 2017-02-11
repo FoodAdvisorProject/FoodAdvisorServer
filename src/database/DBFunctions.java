@@ -240,7 +240,8 @@ public class DBFunctions {
         conn.close();
         return id;
     }
-        public long getUserIdByLogin(String login) throws SQLException{
+    
+    public long getUserIdByLogin(String login) throws SQLException{
         String query ="SELECT id FROM "+user_table+" WHERE login_name="+login;
         
         Connection conn = driver.getConnection();
