@@ -227,7 +227,32 @@ public class DBFunctions {
         conn.close();
         return ret;
     }
-    
+    public long getUserIdByEmail(String email) throws SQLException{
+        String query ="SELECT id FROM "+user_table+" WHERE email="+email;
+        
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return -1;
+        long id = rset.getLong(1);
+        
+        conn.close();
+        return id;
+    }
+        public long getUserIdByLogin(String login) throws SQLException{
+        String query ="SELECT id FROM "+user_table+" WHERE login_name="+login;
+        
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(query);
+        
+        if(!rset.next()) return -1;
+        long id = rset.getLong(1);
+        
+        conn.close();
+        return id;
+    }
     // This function gets a Transaction from a given id_transaction
     public Transaction getTransaction(long id_transaction) throws SQLException{
         String query ="SELECT * FROM "+transaction_table+" WHERE id="+id_transaction;

@@ -37,7 +37,7 @@ public class DBDriver {
         
         //instead use Class newInstance method 
         //to load the module
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         
     }
     
