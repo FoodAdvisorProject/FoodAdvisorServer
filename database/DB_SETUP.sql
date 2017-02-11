@@ -20,7 +20,7 @@ CREATE TABLE ARTICOLO (
 	id_creator   bigint       NOT NULL ,
 	description  varchar(255) NOT NULL,
 	photo        blob,
-	is_valid     bool,        NOT NULL DEFAULT 1,
+	is_valid     bool         NOT NULL DEFAULT 1,
 	FOREIGN KEY (id_creator) REFERENCES UTENTE(id),
 	UNIQUE(name,id_creator)
 );
