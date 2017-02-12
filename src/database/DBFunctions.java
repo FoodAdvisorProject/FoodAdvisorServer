@@ -333,32 +333,19 @@ public class DBFunctions {
     // @IMPL 
     // This function returns a list of articles created by the user
     public List<Article> getUserArticles(long user_id) throws SQLException{
-        String query ="SELECT * FROM "+article_table+
-                " WHERE id_creator = "+user_id;
-        
-        Connection conn = driver.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery(query);
         
         List<Article> l = new LinkedList<>();
         
+        Connection conn = driver.getConnection();
         
-        while(rset.next()){
-            Blob b = rset.getBlob(5);
-            Photo p;
-            if(b!=null) p=new Photo(b.getBytes(1, (int) b.length())); else p=new Photo("");
-            l.add(new Article(rset.getLong(1),
-                    rset.getString(2),
-                    rset.getLong(3),
-                    rset.getString(4),
-                    p));
+        Statement stmt = conn.createStatement();
         
-        }
         
-        query ="SELECT id_article FROM "+transaction_table+
+        String query ="SELECT id_article FROM "+transaction_table+
                 " WHERE id_buyer="+user_id;
         
-        rset = stmt.executeQuery(query);
+        
+        ResultSet rset = stmt.executeQuery(query);
         
         while(rset.next()){
             l.add(getArticle(rset.getLong(1)));
