@@ -1,3 +1,7 @@
+# Transaction (id_article,id_buyer) tuple has to be unique, 
+# otherwise the logic of getArticleTravel(id_article,id_buyer) will be broken
+# this can be an issue
+
 SET foreign_key_checks=0;
 DROP TABLE IF EXISTS ARTICOLO,TRANSAZIONE,UTENTE; 
 SET foreign_key_checks=1;
