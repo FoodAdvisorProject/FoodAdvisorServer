@@ -228,7 +228,7 @@ public class DBFunctions {
         return ret;
     }
     public long getUserIdByEmail(String email) throws SQLException{
-        String query ="SELECT id FROM "+user_table+" WHERE email="+email;
+        String query ="SELECT id FROM "+user_table+" WHERE email='"+email+"'";
         
         Connection conn = driver.getConnection();
         Statement stmt = conn.createStatement();
@@ -242,7 +242,7 @@ public class DBFunctions {
     }
     
     public long getUserIdByLogin(String login) throws SQLException{
-        String query ="SELECT id FROM "+user_table+" WHERE login_name="+login;
+        String query ="SELECT id FROM "+user_table+" WHERE login_name='"+login+"'";
         
         Connection conn = driver.getConnection();
         Statement stmt = conn.createStatement();
@@ -345,12 +345,23 @@ public class DBFunctions {
         
         while(rset.next()){
             Blob b = rset.getBlob(5);
+            Photo p;
+            if(b!=null) p=new Photo(b.getBytes(1, (int) b.length())); else p=new Photo("");
             l.add(new Article(rset.getLong(1),
                     rset.getString(2),
                     rset.getLong(3),
                     rset.getString(4),
-                    new Photo(b.getBytes(1, (int) b.length()))));
+                    p));
         
+        }
+        
+        query ="SELECT id_article FROM "+transaction_table+
+                " WHERE id_buyer="+user_id;
+        
+        rset = stmt.executeQuery(query);
+        
+        while(rset.next()){
+            l.add(getArticle(rset.getLong(1)));
         }
         
         conn.close();
