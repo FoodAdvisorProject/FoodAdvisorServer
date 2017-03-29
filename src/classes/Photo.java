@@ -13,31 +13,27 @@ import java.util.Base64;
  * @author bp
  */
 public class Photo {
-    public final String img;
+    public final String base64;
+    
     public final byte[] data;
+    
     public Photo(String img) {
-        this.img= img;
+        this.base64= img;
         data=null;
     }
     public Photo(byte[] d){
         data=d;
-        img="";
+        base64="";
     }
     
     public String toBase64() {
-        
-        Base64.Encoder e = Base64.getEncoder();
-        //ISO88
-        if(data!=null)
-            return e.encodeToString(data);
-        else
-            return "";
+        return base64;
     }
     
     @Override
     public String toString() {
-        return "Photo{" + "img=" + img + '}';
+        return "Photo{" + "img=" + base64 + '}';
     }
-    
+
     
 }

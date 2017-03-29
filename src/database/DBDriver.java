@@ -38,6 +38,7 @@ public class DBDriver {
         //instead use Class newInstance method 
         //to load the module
         Class.forName("com.mysql.jdbc.Driver").newInstance();
+        //Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         
     }
     
@@ -48,9 +49,11 @@ public class DBDriver {
         connectionProps.put("user",user);
         connectionProps.put("password",passw);
         
+        
+        
         //@FIX notice that auto commit adds overhead creating large rollback tables
         return DriverManager.getConnection(
-                "jdbc:mysql://"+server+":"+port+"/"+database+"?useSSL=false",
+                "jdbc:mysql://"+server+":"+port+"/"+database+"?useSSL=false&serverTimezone=UTC",
                  connectionProps);
         
     }

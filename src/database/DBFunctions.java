@@ -53,7 +53,7 @@ public class DBFunctions {
                            float latitude,
                            Photo photo) throws SQLException{
         String query ="INSERT INTO "+article_table+
-                "( name,id_creator,description) values (?,?,?)";
+                "( name,id_creator,description,photo) values (?,?,?,?)";
         
         String query1 ="INSERT INTO "+transaction_table+
                 "( id_article,id_buyer,longitude,latitude,id_seller) values (?,?,?,?,NULL)";
@@ -66,7 +66,7 @@ public class DBFunctions {
         pstmt.setString (1, name);
         pstmt.setLong   (2, creator_id);
         pstmt.setString (3, description);
-        
+        pstmt.setString (4, photo.toBase64());
         
         pstmt.executeUpdate();
         
@@ -110,9 +110,9 @@ public class DBFunctions {
                         Photo photo) throws SQLException{
         
         String query1 = "INSERT INTO "+user_table+
-                " (login,passw,email,name,second_name,is_enterprise,enterprise_description) values (?,?,?,?,?,?,?);";
+                " (login,passw,email,name,second_name,is_enterprise,enterprise_description,photo) values (?,?,?,?,?,?,?,?);";
         String query2 = "INSERT INTO "+user_table+
-                " (login,passw,email,name,second_name,is_enterprise) values (?,?,?,?,?,?);";
+                " (login,passw,email,name,second_name,is_enterprise,photo) values (?,?,?,?,?,?,?);";
         
         Connection conn = driver.getConnection();
         
@@ -128,7 +128,12 @@ public class DBFunctions {
         pstmt.setString (4, name);
         pstmt.setString (5, second_name);
         pstmt.setInt    (6, is_enterprise);
-        if (is_enterprise>0) pstmt.setString (7, enterprise_description);
+        if (is_enterprise>0) {
+            pstmt.setString (7, enterprise_description);
+            pstmt.setString (8, photo.toBase64());
+        }else {
+            pstmt.setString (7, photo.toBase64());
+        }
         
         pstmt.executeUpdate();
         
@@ -196,7 +201,7 @@ public class DBFunctions {
                             rset.getString(2),
                             rset.getLong(3),
                             rset.getString(4),
-                            p);
+                            new Photo(rset.getString(5)));
         
         conn.close();
         return ret;
@@ -222,7 +227,7 @@ public class DBFunctions {
                 rset.getString(6),
                 rset.getBoolean(7),
                 rset.getString(8),
-                p);
+                new Photo(rset.getString(9)));
         
         conn.close();
         return ret;
@@ -330,7 +335,7 @@ public class DBFunctions {
         return getArticleTravel(art.article_id, user_buyer.user_id);
     }
     
-    // @IMPL 
+    // 
     // This function returns a list of articles created by the user
     public List<Article> getUserArticles(long user_id) throws SQLException{
         
