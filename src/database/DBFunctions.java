@@ -7,6 +7,7 @@ package database;
 
 import classes.Article;
 import classes.Photo;
+import classes.RichTransaction;
 import classes.Transaction;
 import classes.Travel;
 import classes.User;
@@ -268,12 +269,15 @@ public class DBFunctions {
         
         if(!rset.next()) return null;
         
-        Transaction ret= new Transaction(rset.getLong(1),
+        Transaction ret= new RichTransaction(rset.getLong(1),
                 rset.getLong(2),
                 rset.getLong(3),
                 rset.getLong(4),
                 rset.getFloat(5),
-                rset.getFloat(6));
+                rset.getFloat(6),
+                getUser(rset.getLong(3)),
+                getUser(rset.getLong(4))
+        );
         
         conn.close();
         return ret;
@@ -293,12 +297,15 @@ public class DBFunctions {
         
         if(!rset.next()) return null;
         
-        Transaction ret= new Transaction(rset.getLong(1),
+        Transaction ret= new RichTransaction(rset.getLong(1),
                 rset.getLong(2),
                 rset.getLong(3),
                 rset.getLong(4),
                 rset.getFloat(5),
-                rset.getFloat(6));
+                rset.getFloat(6),
+                getUser(rset.getLong(3)),
+                getUser(rset.getLong(4))
+        );
         
         conn.close();
         return ret;
