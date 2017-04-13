@@ -47,7 +47,7 @@ public class DBFunctions {
     // This is used to find the end of the trip of the article.
     // 
     // the tuple (name, id_creator) has to be unique 
-    public void addArticle(String name,
+    public long addArticle(String name,
                            long creator_id,
                            String description,
                            float longitude,
@@ -60,7 +60,7 @@ public class DBFunctions {
                 "( id_article,id_buyer,longitude,latitude,id_seller) values (?,?,?,?,NULL)";
         Connection conn = driver.getConnection();
         conn.setAutoCommit(false);
-        
+        long article_id=-1;
         try{
         PreparedStatement pstmt = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         
@@ -73,7 +73,7 @@ public class DBFunctions {
         
         ResultSet rs = pstmt.getGeneratedKeys();
         
-        long article_id=-1;
+        
         if(rs.next()) article_id=rs.getLong(1);
         else throw new SQLException("Cannot retrieve the generated key");
         
@@ -93,6 +93,7 @@ public class DBFunctions {
         }finally{
         conn.close();
         }
+        return article_id;
     }
     
     // This function adds an user to the DB with proper data
