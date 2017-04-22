@@ -30,8 +30,7 @@ public class FoodAdvisor {
             DBFunctions df = new DBFunctions(dd,"UTENTE","ARTICOLO","TRANSAZIONE");
             //df.addArticle("T1", 1, "ASDS", 1, 1, new Photo("123456"));
             
-            System.out.println(df.getUserArticles(1));
-            
+            System.out.println("Article life: "+df.getArticleLife(1,0));
         } catch (Exception ex) {
             Logger.getLogger(FoodAdvisor.class.getName()).log(Level.SEVERE, null, ex);
         }

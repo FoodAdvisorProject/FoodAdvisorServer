@@ -27,7 +27,8 @@ public class Travel {
     @Override
     public String toString() {
         String ret= "Travel{ ";
-        for (Transaction t : list) ret+=t.toString()+" ";
+        for (Transaction t : list) ret+=t.toString()+", ";
+        
         return ret +  '}';
     }
     

@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -292,6 +293,7 @@ public class DBFunctions {
                 " WHERE id_article = "+article_id +
                 " AND   id_buyer = "+buyer_id;
         
+        
         Connection conn = driver.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery(query);
@@ -311,6 +313,96 @@ public class DBFunctions {
         conn.close();
         return ret;
     }
+    // in order to search for epoch transaction of an article search for seller_id ==0
+    // @TODO fix this issue substituting 0 to NULL into the epoch transaction.
+    public List<Transaction> getTransactionBySeller(long article_id,long seller_id) throws SQLException{
+           
+        String query = "SELECT * FROM "+transaction_table+
+                " WHERE id_article = "+ article_id + 
+                " AND   id_seller  = "+ seller_id ;
+        //Handle null in seller_id
+        String except_query = "SELECT * FROM "+transaction_table+
+                " WHERE id_article = "+ article_id + 
+                " AND   id_seller IS NULL" ;
+        
+        Connection conn = driver.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rset = stmt.executeQuery(
+                (seller_id>0) ? query : except_query // Handle NULL in seller_id
+        );
+        
+        LinkedList<Transaction> ret = new LinkedList<>();
+        
+        while(rset.next()){
+            
+            Transaction t = new RichTransaction(
+                    rset.getLong(1),
+                rset.getLong(2),
+                rset.getLong(3),
+                rset.getLong(4),
+                rset.getFloat(5),
+                rset.getFloat(6),
+                getUser(rset.getLong(3)),
+                getUser(rset.getLong(4))
+            );
+            
+            
+            ret.add(t);
+        }
+        System.out.println("[+] transaction by seller:");
+        System.out.println(ret);
+        return ret;
+    }
+    
+    
+    // Retrieves a list of Travels that the article_id has done.
+    // Chosing the seller is possible to retrieve whoever 
+    // has bought the article starting from the seller
+    
+    public List<Travel> getArticleLife(long article_id,long seller_id) throws SQLException{
+        
+        // Get a list of transaction in which the article is bought from the chosen seller
+        List<Transaction> list_of_buyer = getTransactionBySeller(article_id,seller_id);
+        
+        // if it is empty return a new empty list
+        if( list_of_buyer.size() == 0 ) return new LinkedList(); 
+        
+        // Create the accumulator for the return value
+        List<Travel> ret = new LinkedList<>();
+        
+        // for each transaction trans in list_of_buyer get article travel starting from it
+        // and add the transaction trans in head of it
+        for ( Transaction trans : list_of_buyer ) {
+            
+            List<Travel> temp = getArticleLife(trans.article_id,trans.buyer_id);
+            
+            
+            LinkedList<Transaction> t_l;
+            
+            // if the article life starting from trans is empty trans is a leaf of the tree.
+            // create a single-entry travel with trans as unique transaction and return.
+            if( temp.size() == 0 ){
+                t_l = new LinkedList<Transaction>();
+                t_l.add(trans);
+                ret.add(new Travel(t_l));
+                continue;
+            }
+            
+            // otherwise if there are existing article life starting from trans
+            // then it is a node, so get the existing travel, add trans in head and return it
+            for ( Travel travel : temp ){
+                
+                t_l = (LinkedList<Transaction>) travel.getTransactionList().clone();
+                t_l.add(trans);
+                ret.add(new Travel(t_l));
+            }
+            
+        }
+        // return the build ArticleLife
+        return ret;
+        
+    }
+            
     // Overload of the previous function
     public Transaction getTransaction(Article art,User user) throws SQLException{
         return getTransaction(art.article_id, user.user_id);

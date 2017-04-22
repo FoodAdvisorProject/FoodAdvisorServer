@@ -19,6 +19,6 @@ public class RichTransaction extends Transaction{
     
     @Override
     public String toString(){
-        return "Rich"+super.toString()+" "+buyer+" "+seller;
+        return "Rich"+super.toString();
     }
 }
